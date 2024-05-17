@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <title>Animaxxer</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            padding: 0;
+            margin: 0;
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, .65), rgba(0, 0, 0, 0.5)), url("./background.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-end;
+        }
+
+        h1 {
+            text-align: center;
+            position:fixed;
+            top: 5px;
+            width:100vw;
+            font-weight: bolder;
+            margin: 0;
+            font-size: 5vw;
+            color: rgb(0, 138, 138);
+        }
+
+        h2 {
+            text-align: left;
+            margin-left: 14px;
+        }
+
+        .website-button {
+            margin: 10px;
+            padding: 0;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            text-align: center;
+            background-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+            border: 0;
+            color: #ffffff;
+            font-weight: bold;
+            display: inline-block;
+            width: calc(50vw - 24px);
+            font-size: 26px;
+            border-radius: 5px;
+            border: 2px solid green;
+            transition: background-color 0.5s;
+        }
+
+        .button {
+            margin: 10px;
+            padding: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: transparent;
+            border: 0;
+            color: #ffffff;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 26px;
+            border-radius: 5px;
+            border: 2px solid green;
+            transition: background-color 0.5s;
+            position:fixed;
+            top: 3px;
+        }
+
+        .website-button img {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .website-button.disabled {
+            opacity: .5;
+            pointer-events: none;
+            border: 2px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <button onclick="window.location='https://myanimelist.net';" class="button" style="left:3px;">
+            <img src="https://myanimelist.net/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);" alt="MAL logo" height="30">
+        </button>
+        <h1>Animaxxer</h1>
+        <h2>Anime streaming services:</h2>
+        <div class="websites-container" id="websites-container">
+            <!-- Websites buttons will be dynamically added here -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const websitesContainer = document.getElementById("websites-container");
+
+            // List of websites to display buttons for
+            const websites = [
+                // Add your website URLs here
+                'https://hianime.to/',
+                'https://anicrush.to/',
+                'https://aniwatchtv.to/',
+                'https://aniwatch.se/',
+                'https://aniwatch.nz/',
+                'https://animeflix.live/',
+                'https://animeflix.li/',
+                'https://animeflix.gg/',
+                //'https://anix.to/',
+                //'https://4anime.gg/',
+                //'https://9animetv'
+            ];
+
+            // Add buttons for each website
+            websites.forEach(website => {
+                const websiteName = website.split('/')[2]; // Assuming URLs are in the format www.example.com
+                const websiteButton = document.createElement('button');
+                websiteButton.setAttribute("onclick", "window.location='" + website + "';");
+                websiteButton.classList.add('website-button');
+                websiteButton.innerHTML = `
+            <img src="${website}/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);" alt="(no response)" height="30">
+            ${websiteName}
+        `;
+                websitesContainer.appendChild(websiteButton);
+
+                // Check if the icon fails to load and try common icon URLs
+                const img = websiteButton.querySelector('img');
+                img.addEventListener('error', () => {
+                    setTimeout(() => {
+                        img.src = website + '/favicon.ico';
+                        button.classList.remove('disabled');
+                    }, 1800000);
+                });
+            });
+
+            // Grey out buttons if icons fail to load within a second
+            setTimeout(() => {
+                const buttons = document.querySelectorAll('.website-button');
+                buttons.forEach(button => {
+                    const img = button.querySelector('img');
+                    if (!img.complete || img.naturalHeight === 0) {
+                        button.classList.add('disabled');
+                    }
+                });
+            }, 2000);
+
+        });
+
+
+    </script>
+</body>
+
+</html>
