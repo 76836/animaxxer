@@ -29,9 +29,9 @@
 
         h1 {
             text-align: center;
-            position:fixed;
+            position: fixed;
             top: 5px;
-            width:100vw;
+            width: 100vw;
             font-weight: bolder;
             margin: 0;
             font-size: 5vw;
@@ -46,6 +46,7 @@
         .website-button {
             margin: 10px;
             padding: 0;
+            word-wrap: break-word;
             padding-top: 20px;
             padding-bottom: 20px;
             text-align: center;
@@ -76,7 +77,7 @@
             border-radius: 5px;
             border: 2px solid green;
             transition: background-color 0.5s;
-            position:fixed;
+            position: fixed;
             top: 3px;
         }
 
@@ -96,25 +97,63 @@
 <body>
     <div>
         <button onclick="window.location='https://myanimelist.net';" class="button" style="left:3px;">
-            <img src="https://myanimelist.net/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);" alt="MAL logo" height="30">
+            <img src="https://myanimelist.net/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);"
+                alt="MAL logo" height="30">
         </button>
+        <button id="switch" onclick="window.location='soundtoggle();'" class="button"
+            style="right:3px; font-size: large;">Sound OFF</button>
         <h1>Animaxxer</h1>
         <h2>Anime streaming services:</h2>
         <div class="websites-container" id="websites-container">
             <!-- Websites buttons will be dynamically added here -->
         </div>
     </div>
-     <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./service-worker.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        }).catch((error) => {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
-     </script>
+    <div id="invisible"></div>
+
     <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then((registration) => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }).catch((error) => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+    </script>
+
+    <script>
+        var soundon = localStorage.getItem('soundtoggle');
+        if (soundon) {
+            document.getElementById('switch').innerText = "Sound ON"
+        } else {
+            document.getElementById('switch').innerText = "Sound OFF"
+        };
+        
+        function soundtoggle() {
+            if (soundon) {
+                localStorage.setItem("soundtoggle", false);
+            } else {
+                localStorage.setItem("soundtoggle", true);
+            };
+            soundon = localStorage.getItem('soundtoggle');
+            if (soundon) {
+                document.getElementById('switch').innerText = "Sound ON"
+            } else {
+                document.getElementById('switch').innerText = "Sound OFF"
+            };
+        };
+
+        if (soundon) {
+            const audioElement = document.createElement('audio');
+            audioElement.setAttribute('src', './sound.mp3');
+            audioElement.setAttribute('id', 'Audio');
+            const invisibleDiv = document.getElementById('invisible');
+            invisibleDiv.appendChild(audioElement);
+            console.log('Playing the sound');
+            const audio = document.getElementById('Audio');
+            audio.play();
+        };
+
         document.addEventListener("DOMContentLoaded", function () {
             const websitesContainer = document.getElementById("websites-container");
 
