@@ -36,6 +36,7 @@
             margin: 0;
             font-size: 5vw;
             color: rgb(0, 138, 138);
+            z-index:1;
         }
 
         h2 {
@@ -79,6 +80,7 @@
             transition: background-color 0.5s;
             position: fixed;
             top: 3px;
+            z-index:3;
         }
 
         .website-button img {
@@ -177,10 +179,10 @@
             websites.forEach(website => {
                 const websiteName = website.split('/')[2]; // Assuming URLs are in the format www.example.com
                 const websiteButton = document.createElement('button');
-                websiteButton.setAttribute("onclick", "window.location='" + website + "';");
+                websiteButton.setAttribute("onclick", "launch('" + website + "');");
                 websiteButton.classList.add('website-button');
                 websiteButton.innerHTML = `
-            <img src="${website}/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);" alt="(no response)" height="30">
+            <img src="${website}/favicon.ico" onclick="" alt="(no response)" height="30">
             ${websiteName}
         `;
                 websitesContainer.appendChild(websiteButton);
@@ -208,7 +210,34 @@
 
         });
 
-
+function launch(streamer) {
+    const isMobile = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+    },
+    any: function() {
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+    }
+    };
+        if ( isMobile.any() ){
+			window.location = streamer;
+		}else{
+            window.open(streamer);
+            setTimeout(() => {window.close();}, 1000);
+        };
+};
     </script>
 </body>
 
