@@ -10,9 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
     <title>Animaxxer</title>
     <style>
+        :root {
+            --primary-color: rgb(0, 138, 138);
+            --button-border: green;
+            --disabled-border: red;
+            --text-color: #ffffff;
+            --background: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #000;
-            color: #ffffff;
+            background-color: var(--background);
+            color: var(--text-color);
             font-family: 'Orbitron', sans-serif;
             padding: 0;
             margin: 0;
@@ -23,96 +35,399 @@
             min-height: 100vh;
             background-attachment: fixed;
             display: flex;
-            flex-direction: column-reverse;
-            align-items: flex-end;
+            flex-direction: column;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         h1 {
             text-align: center;
-            position: fixed;
-            top: 5px;
-            width: 100vw;
             font-weight: bolder;
             margin: 0;
-            font-size: 5vw;
-            color: rgb(0, 138, 138);
-            z-index:1;
+            font-size: clamp(24px, 5vw, 48px);
+            color: var(--primary-color);
+            width: 100%;
         }
 
         h2 {
             text-align: left;
-            margin-left: 14px;
+            margin: 10px 14px;
+            font-size: clamp(18px, 3vw, 24px);
         }
 
-        .website-button {
-            margin: 10px;
-            padding: 0;
-            word-wrap: break-word;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            text-align: center;
-            background-color: transparent;
-            font-family: 'Orbitron', sans-serif;
-            border: 0;
-            color: #ffffff;
-            font-weight: bold;
-            display: inline-block;
-            width: calc(50vw - 24px);
-            font-size: 26px;
-            border-radius: 5px;
-            border: 2px solid green;
-            transition: background-color 0.5s;
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .button {
-            margin: 10px;
-            padding: 0;
-            padding: 20px;
+            padding: 10px 15px;
             text-align: center;
             background-color: transparent;
-            border: 0;
-            color: #ffffff;
+            color: var(--text-color);
             font-weight: bold;
-            display: inline-block;
-            font-size: 26px;
+            font-size: clamp(14px, 2vw, 18px);
             border-radius: 5px;
-            border: 2px solid green;
-            transition: background-color 0.5s;
-            position: fixed;
-            top: 3px;
-            z-index:3;
+            border: 2px solid var(--button-border);
+            transition: all 0.3s;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .button:hover {
+            background-color: rgba(0, 128, 0, 0.2);
+        }
+
+        .button img {
+            height: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            margin: 15px auto;
+            position: relative;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            font-family: 'Orbitron', sans-serif;
+            border: 2px solid var(--button-border);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--text-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .search-button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            font-weight: bold;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--button-border);
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            z-index: 5;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-option {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-option:hover {
+            background-color: rgba(0, 128, 0, 0.2);
+        }
+
+        main {
+            margin-top: 130px;
+            padding: 10px;
+        }
+
+        .websites-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        .promoted {
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 768px) {
+            .promoted {
+                grid-column: span 2;
+            }
+        }
+
+        .website-button {
+            padding: 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: clamp(16px, 2vw, 22px);
+            border-radius: 5px;
+            border: 2px solid var(--button-border);
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            height: 120px;
+        }
+
+        .website-button:hover {
+            background-color: rgba(0, 128, 0, 0.2);
         }
 
         .website-button img {
-            vertical-align: middle;
-            margin-right: 5px;
+            max-height: 40px;
+            max-width: 40px;
         }
 
         .website-button.disabled {
             opacity: .5;
-            pointer-events: none;
-            border: 2px solid red;
+            border: 2px solid var(--disabled-border);
+        }
+
+        .pin-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .pin-button:hover, .pinned .pin-button {
+            opacity: 1;
+        }
+
+        .pinned .pin-button {
+            color: gold;
+        }
+
+        .show-more-container {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .show-more-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+        }
+
+        .show-unavailable-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Mini menu styles */
+        .mini-menu-toggle {
+            display: none;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+        }
+
+        @media (max-width: 767px) {
+            .mini-menu-toggle {
+                display: block;
+            }
+
+            .websites-container.collapsed {
+                display: none;
+            }
+
+            main {
+                margin-top: 180px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div>
-        <button onclick="window.location='https://myanimelist.net';" class="button" style="left:3px;">
-            <img src="https://myanimelist.net/favicon.ico" onclick="setTimeout(() => {window.close();}, 1000);"
-                alt="MAL logo" height="30">
-        </button>
-        <button id="switch" onclick="soundtoggle();" class="button"
-            style="right:3px; font-size: large;">Sound</button>
-        <h1>Animaxxer</h1>
+    <header>
+        <div class="header-content">
+            <button onclick="window.location='https://myanimelist.net';" class="button">
+                <img src="https://myanimelist.net/favicon.ico" alt="MAL logo">
+            </button>
+            <h1>Animaxxer</h1>
+            <div class="control-buttons">
+                <button id="switch" onclick="soundtoggle();" class="button">Sound</button>
+                <button id="show-unavailable" onclick="toggleUnavailable();" class="button">toggle hidden</button>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Search anime..." oninput="showSearchSuggestions()">
+            <button id="search-button" class="search-button" onclick="searchAnime()">Go</button>
+            <div id="search-suggestions" class="search-suggestions"></div>
+        </div>
+    </header>
+
+    <main>
         <h2>Anime streaming services:</h2>
+        <button id="mini-menu-toggle" class="mini-menu-toggle" onclick="toggleMiniMenu()">More</button>
         <div class="websites-container" id="websites-container">
             <!-- Websites buttons will be dynamically added here -->
         </div>
-    </div>
+        <div class="show-more-container" id="show-more-container">
+            <button id="show-more-button" class="show-more-button" onclick="showMoreWebsites()">Show More</button>
+        </div>
+    </main>
     <div id="invisible"></div>
 
     <script>
+        // Website data structure with extended properties
+        const websiteData = [
+            {
+                url: 'https://hianime.to/',
+                imageUrl: 'https://hianime.to/favicon.ico',
+                searchUrl: 'https://hianime.to/search?keyword=',
+                launchUrl: 'https://hianime.to/home',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://anicrush.to/',
+                imageUrl: 'https://anicrush.to/favicon.ico',
+                searchUrl: 'https://anicrush.to/search?q=',
+                launchUrl: 'https://anicrush.to/home',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://aniwatchtv.to/',
+                imageUrl: 'https://aniwatchtv.to/favicon.ico',
+                searchUrl: 'https://aniwatchtv.to/search?keyword=',
+                launchUrl: 'https://aniwatchtv.to/home',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://aniwatch.se/',
+                imageUrl: 'https://aniwatch.se/favicon.ico',
+                searchUrl: 'https://aniwatch.se/search?keyword=',
+                launchUrl: 'https://aniwatch.se/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://aniwatch.nz/',
+                imageUrl: 'https://aniwatch.nz/favicon.ico',
+                searchUrl: 'https://aniwatch.nz/search?keyword=',
+                launchUrl: 'https://aniwatch.nz/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://animeflix.live/',
+                imageUrl: 'https://animeflix.live/favicon.ico',
+                searchUrl: 'https://animeflix.live/search?q=',
+                launchUrl: 'https://animeflix.live/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://animeflix.li/',
+                imageUrl: 'https://animeflix.li/favicon.ico',
+                searchUrl: 'https://animeflix.li/search?q=',
+                launchUrl: 'https://animeflix.li/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://animeflix.gg/',
+                imageUrl: 'https://animeflix.gg/favicon.ico',
+                searchUrl: 'https://animeflix.gg/search?q=',
+                launchUrl: 'https://animeflix.gg/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://anix.to/',
+                imageUrl: 'https://anix.to/favicon.ico',
+                searchUrl: 'https://anix.to/search?keyword=',
+                launchUrl: 'https://anix.to/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://4anime.gg/',
+                imageUrl: 'https://4anime.gg/favicon.ico',
+                searchUrl: 'https://4anime.gg/search?keyword=',
+                launchUrl: 'https://4anime.gg/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            },
+            {
+                url: 'https://9animetv.to/',
+                imageUrl: 'https://9animetv.to/favicon.ico',
+                searchUrl: 'https://9animetv.to/search?keyword=',
+                launchUrl: 'https://9animetv.to/',
+                clicks: 0,
+                available: true,
+                pinned: false
+            }
+        ];
+
+        // Variables for UI state
+        let promotedWebsite = null;
+        let initialDisplayCount = getInitialDisplayCount();
+        let displayingUnavailable = false;
+        let soundOn = localStorage.getItem('soundtoggle') === 'true';
+        let isMiniMenuActive = window.innerWidth < 768;
+
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./service-worker.js')
                 .then((registration) => {
@@ -121,123 +436,382 @@
                     console.log('Service Worker registration failed:', error);
                 });
         }
-    </script>
 
-    <script>
-        var soundon = localStorage.getItem('soundtoggle');
-        if (soundon) {
-            document.getElementById('switch').innerText = "Sound ON"
-        } else {
-            document.getElementById('switch').innerText = "Sound OFF"
-        };
-        
-        function soundtoggle() {
-            if (soundon) {
-                localStorage.setItem("soundtoggle", false);
-            } else {
-                localStorage.setItem("soundtoggle", true);
-            };
-            soundon = localStorage.getItem('soundtoggle');
-            if (soundon) {
-                document.getElementById('switch').innerText = "Sound ON"
-            } else {
-                document.getElementById('switch').innerText = "Sound OFF"
-            };
-        };
-
-        if (soundon) {
-            const audioElement = document.createElement('audio');
-            audioElement.setAttribute('src', './sound.mp3');
-            audioElement.setAttribute('id', 'Audio');
-            const invisibleDiv = document.getElementById('invisible');
-            invisibleDiv.appendChild(audioElement);
-            console.log('Playing the sound');
-            const audio = document.getElementById('Audio');
-            audio.play();
-        };
-
+        // Initialize app on load
         document.addEventListener("DOMContentLoaded", function () {
-            const websitesContainer = document.getElementById("websites-container");
-
-            // List of websites to display buttons for
-            const websites = [
-                // Add your website URLs here
-                'https://hianime.to/',
-                'https://anicrush.to/',
-                'https://aniwatchtv.to/',
-                'https://aniwatch.se/',
-                'https://aniwatch.nz/',
-                'https://animeflix.live/',
-                'https://animeflix.li/',
-                'https://animeflix.gg/',
-                //'https://anix.to/',
-                //'https://4anime.gg/',
-                //'https://9animetv'
-            ];
-
-            // Add buttons for each website
-            websites.forEach(website => {
-                const websiteName = website.split('/')[2]; // Assuming URLs are in the format www.example.com
-                const websiteButton = document.createElement('button');
-                websiteButton.setAttribute("onclick", "launch('" + website + "');");
-                websiteButton.classList.add('website-button');
-                websiteButton.innerHTML = `
-            <img src="${website}/favicon.ico" onclick="" alt="(no response)" height="30">
-            ${websiteName}
-        `;
-                websitesContainer.appendChild(websiteButton);
-
-                // Check if the icon fails to load and try common icon URLs
-                const img = websiteButton.querySelector('img');
-                img.addEventListener('error', () => {
-                    setTimeout(() => {
-                        img.src = website + '/favicon.ico';
-                        button.classList.remove('disabled');
-                    }, 1800000);
-                });
+            loadUserPreferences();
+            updateSoundButtonText();
+            renderWebsites();
+            setupSearchEvents();
+            updateMiniMenuVisibility();
+            
+           
+            
+            // Responsive adjustments on window resize
+            window.addEventListener('resize', function() {
+                initialDisplayCount = getInitialDisplayCount();
+                updateMiniMenuVisibility();
+                renderWebsites();
             });
-
-            // Grey out buttons if icons fail to load within a second
-            setTimeout(() => {
-                const buttons = document.querySelectorAll('.website-button');
-                buttons.forEach(button => {
-                    const img = button.querySelector('img');
-                    if (!img.complete || img.naturalHeight === 0) {
-                        button.classList.add('disabled');
-                    }
-                });
-            }, 2000);
-
         });
 
-function launch(streamer) {
-    const isMobile = {
-    Android: function() {
-        return navigator.userAgent.match(/Android/i);
-    },
-    BlackBerry: function() {
-        return navigator.userAgent.match(/BlackBerry/i);
-    },
-    iOS: function() {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-    },
-    Opera: function() {
-        return navigator.userAgent.match(/Opera Mini/i);
-    },
-    Windows: function() {
-        return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
-    },
-    any: function() {
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-    }
-    };
-        if ( isMobile.any() ){
-			window.location = streamer;
-		}else{
-            window.open(streamer);
-            setTimeout(() => {window.close();}, 1000);
-        };
-};
+        // Function to determine how many items to show initially based on screen size
+        function getInitialDisplayCount() {
+            if (window.innerWidth < 768) {
+                return 4; // Mobile: Show 4 items initially
+            } else if (window.innerWidth < 1200) {
+                return 6; // Tablet: Show 6 items initially
+            } else {
+                return 8; // Desktop: Show 8 items initially
+            }
+        }
+
+        // Load user preferences from localStorage
+        function loadUserPreferences() {
+            // Load clicks data
+            websiteData.forEach((site, index) => {
+                const clicks = localStorage.getItem(`clicks_${site.url}`);
+                if (clicks) {
+                    websiteData[index].clicks = parseInt(clicks);
+                }
+                
+                const pinned = localStorage.getItem(`pinned_${site.url}`);
+                if (pinned) {
+                    websiteData[index].pinned = pinned === 'true';
+                }
+            });
+            
+            // Sort websites by clicks count
+            sortWebsitesByPreference();
+            
+            // Set promoted website as the most clicked one
+            determinePromotedWebsite();
+            
+            // Load sound preference
+            soundOn = localStorage.getItem('soundtoggle') === 'true';
+        }
+
+        // Sort websites by pinned status and clicks
+        function sortWebsitesByPreference() {
+            websiteData.sort((a, b) => {
+                // First, sort by pinned status
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                
+                // Then, sort by clicks
+                return b.clicks - a.clicks;
+            });
+        }
+
+        // Determine which website should be promoted (most clicked or first pinned)
+        function determinePromotedWebsite() {
+            const pinnedSites = websiteData.filter(site => site.pinned);
+            if (pinnedSites.length > 0) {
+                promotedWebsite = pinnedSites[0];
+            } else {
+                promotedWebsite = websiteData[0]; // Most clicked if no pinned sites
+            }
+        }
+
+        // Render websites to the container
+        function renderWebsites() {
+            const websitesContainer = document.getElementById("websites-container");
+            const showMoreContainer = document.getElementById("show-more-container");
+            websitesContainer.innerHTML = ''; // Clear existing content
+            
+            // Determine which websites to display
+            let visibleWebsites = websiteData.filter(site => 
+                displayingUnavailable ? true : site.available);
+                
+            // Only show a limited number initially if mini menu is active
+            const sitesToShow = isMiniMenuActive ? 
+                visibleWebsites.slice(0, initialDisplayCount) : 
+                visibleWebsites;
+                
+            // Show/hide the "show more" button
+            showMoreContainer.style.display = 
+                (isMiniMenuActive && visibleWebsites.length > initialDisplayCount) ? 
+                'block' : 'none';
+
+            // Render websites
+            sitesToShow.forEach((site, index) => {
+                const isPromoted = site === promotedWebsite;
+                const websiteButton = createWebsiteButton(site, isPromoted);
+                websitesContainer.appendChild(websiteButton);
+            });
+        }
+
+        // Create a button element for a website
+        function createWebsiteButton(site, isPromoted) {
+            const websiteButton = document.createElement('div');
+            const websiteName = site.url.split('/')[2];
+            
+            websiteButton.classList.add('website-button');
+            if (isPromoted) {
+                websiteButton.classList.add('promoted');
+            }
+            if (!site.available) {
+                websiteButton.classList.add('disabled');
+            }
+            if (site.pinned) {
+                websiteButton.classList.add('pinned');
+            }
+            
+            websiteButton.innerHTML = `
+                <img src="${site.imageUrl}" alt="${websiteName}" onerror="this.onerror=null; this.src='${site.url}/favicon.ico'; markUnavailable(this);">
+                <span>${websiteName}</span>
+                <button class="pin-button" onclick="togglePin('${site.url}', event)">📌</button>
+            `;
+            
+            websiteButton.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('pin-button')) {
+                    launchWebsite(site.url);
+                }
+            });
+            
+            return websiteButton;
+        }
+
+        // Function to launch a website
+        function launchWebsite(url) {
+            // Increment click count
+            const siteIndex = websiteData.findIndex(site => site.url === url);
+            if (siteIndex !== -1) {
+                websiteData[siteIndex].clicks++;
+                localStorage.setItem(`clicks_${url}`, websiteData[siteIndex].clicks);
+                
+                // Re-sort and potentially update promoted website
+                sortWebsitesByPreference();
+                determinePromotedWebsite();
+            }
+
+	    // Play sound if enabled
+            if (soundOn) {
+                playAppSound();
+            }
+		
+            // Launch the website
+            if (isMobileDevice()) {
+                window.location = url;
+            } else {
+                window.open(url);
+                setTimeout(() => {window.close();}, 3000);
+            }
+        }
+
+        // Detect if the device is mobile
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Function to toggle pinned status
+        function togglePin(url, event) {
+            event.stopPropagation();
+            const siteIndex = websiteData.findIndex(site => site.url === url);
+            if (siteIndex !== -1) {
+                websiteData[siteIndex].pinned = !websiteData[siteIndex].pinned;
+                localStorage.setItem(`pinned_${url}`, websiteData[siteIndex].pinned);
+                
+                // Re-sort and potentially update promoted website
+                sortWebsitesByPreference();
+                determinePromotedWebsite();
+                renderWebsites();
+            }
+        }
+
+        // Function to mark a website as unavailable if icon fails to load
+        function markUnavailable(imgElement) {
+            setTimeout(() => {
+                if (!imgElement.complete || imgElement.naturalHeight === 0) {
+                    const websiteButton = imgElement.closest('.website-button');
+                    websiteButton.classList.add('disabled');
+                    
+                    // Find the website in the data and mark it as unavailable
+                    const websiteName = websiteButton.querySelector('span').textContent;
+                    const siteIndex = websiteData.findIndex(site => site.url.includes(websiteName));
+                    if (siteIndex !== -1) {
+                        websiteData[siteIndex].available = false;
+                    }
+                }
+            }, 2000);
+        }
+
+        // Function to toggle sound
+        function soundtoggle() {
+            soundOn = !soundOn;
+            localStorage.setItem("soundtoggle", soundOn);
+            updateSoundButtonText();
+            
+            if (soundOn) {
+                playAppSound();
+            }
+        }
+        
+        // Update sound button text
+        function updateSoundButtonText() {
+            document.getElementById('switch').innerText = soundOn ? "Sound ON" : "Sound OFF";
+        }
+        
+        // Play app sound
+        function playAppSound() {
+            const invisibleDiv = document.getElementById('invisible');
+            let audio = document.getElementById('Audio');
+            
+            if (!audio) {
+                audio = document.createElement('audio');
+                audio.setAttribute('src', './sound.mp3');
+                audio.setAttribute('id', 'Audio');
+                invisibleDiv.appendChild(audio);
+            }
+            
+            audio.play().catch(e => console.log('Failed to play sound:', e));
+        }
+        
+        // Function to toggle visibility of unavailable websites
+        function toggleUnavailable() {
+            displayingUnavailable = !displayingUnavailable;
+            document.getElementById('show-unavailable').innerText = 
+                displayingUnavailable ? "Hide Unavailable" : "Show All";
+            renderWebsites();
+        }
+        
+        // Function to show more websites in mini menu mode
+        function showMoreWebsites() {
+            isMiniMenuActive = false;
+            document.getElementById('mini-menu-toggle').innerText = "Less";
+            renderWebsites();
+        }
+        
+        // Function to toggle mini menu
+        function toggleMiniMenu() {
+            isMiniMenuActive = !isMiniMenuActive;
+            document.getElementById('mini-menu-toggle').innerText = 
+                isMiniMenuActive ? "More" : "Less";
+            renderWebsites();
+        }
+        
+        // Update mini menu button visibility based on screen size
+        function updateMiniMenuVisibility() {
+            const miniMenuToggle = document.getElementById('mini-menu-toggle');
+            const isSmallScreen = window.innerWidth < 768;
+            
+            miniMenuToggle.style.display = isSmallScreen ? 'block' : 'none';
+            isMiniMenuActive = isSmallScreen;
+        }
+        
+        // Set up search functionality
+        function setupSearchEvents() {
+            const searchInput = document.getElementById('search-input');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            
+            // Show suggestions when typing
+            searchInput.addEventListener('input', showSearchSuggestions);
+            
+            // Close suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.style.display = 'none';
+                }
+            });
+            
+            // Add Enter key support
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    searchAnime();
+                }
+            });
+        }
+        
+        // Show search suggestions
+        function showSearchSuggestions() {
+            const searchInput = document.getElementById('search-input');
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const query = searchInput.value.trim();
+            
+            if (query.length === 0) {
+                searchSuggestions.style.display = 'none';
+                return;
+            }
+            
+            // Get available sites for search suggestions
+            const availableSites = websiteData.filter(site => site.available);
+            
+            // Clear previous suggestions
+            searchSuggestions.innerHTML = '';
+            
+            // Add search option for promoted website first
+            if (promotedWebsite && promotedWebsite.available) {
+                addSearchSuggestion(promotedWebsite, query);
+            }
+            
+            // Add other search options (excluding promoted)
+            availableSites.forEach(site => {
+                if (site !== promotedWebsite) {
+                    addSearchSuggestion(site, query);
+                }
+            });
+            
+            searchSuggestions.style.display = 'block';
+        }
+        
+        // Add a search suggestion to the dropdown
+        function addSearchSuggestion(site, query) {
+            const searchSuggestions = document.getElementById('search-suggestions');
+            const websiteName = site.url.split('/')[2];
+            
+            const suggestion = document.createElement('div');
+            suggestion.classList.add('search-option');
+            suggestion.textContent = `Search on ${websiteName}`;
+            suggestion.addEventListener('click', function() {
+                performSearch(site, query);
+            });
+            
+            searchSuggestions.appendChild(suggestion);
+        }
+        
+        // Search anime with the current query
+        function searchAnime() {
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput.value.trim();
+            
+            if (query.length === 0) return;
+            
+            // Use promoted website for search by default
+            if (promotedWebsite && promotedWebsite.available) {
+                performSearch(promotedWebsite, query);
+            } else {
+                // If promoted is unavailable, use the first available site
+                const availableSite = websiteData.find(site => site.available);
+                if (availableSite) {
+                    performSearch(availableSite, query);
+                } else {
+                    alert('No available streaming services to search with');
+                }
+            }
+        }
+        
+        // Perform search on a specific site
+        function performSearch(site, query) {
+            const searchUrl = site.searchUrl + encodeURIComponent(query);
+            
+            // Increment click count for the site
+            const siteIndex = websiteData.findIndex(s => s.url === site.url);
+            if (siteIndex !== -1) {
+                websiteData[siteIndex].clicks++;
+                localStorage.setItem(`clicks_${site.url}`, websiteData[siteIndex].clicks);
+            }
+             // Play sound if enabled
+            if (soundOn) {
+                playAppSound();
+            }
+            // Navigate to search results
+            if (isMobileDevice()) {
+                window.location = searchUrl;
+            } else {
+                window.open(searchUrl);
+                setTimeout(() => {window.close();}, 3000);
+            }
+        }
     </script>
 </body>
 
